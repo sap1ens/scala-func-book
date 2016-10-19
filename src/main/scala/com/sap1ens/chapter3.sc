@@ -109,7 +109,7 @@ object ListC {
 
   // 3.14
   def append[A](as: List[A], elem: A): List[A] = {
-    reverse(foldRight(as, List(elem))((b, a) => a ::: List(b)))
+    foldRight(as, List(elem))((b, a) => List(b) ::: a)
   }
 
   // 3.16
@@ -137,6 +137,16 @@ object ListC {
         b
     }
   }
+
+  // 3.20
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = {
+    foldRight(as, List.empty[B])((b, a) => f(b) ::: a)
+  }
+
+  // 3.21
+  def filter2[A](as: List[A])(f: A => Boolean): List[A] = {
+    flatMap(as)(i => if(f(i)) List(i) else Nil)
+  }
 }
 
 val l = List(1, 2, 3, 4, 5, 6, 7, 8)
@@ -155,3 +165,5 @@ ListC.append(l, 9)
 ListC.transformPlusOne(l)
 ListC.map(l)(_ * 10)
 ListC.filter(l)(_ % 2 == 0)
+ListC.flatMap(List(1,2,3))(i => List(i,i))
+ListC.filter2(l)(_ % 2 == 0)
